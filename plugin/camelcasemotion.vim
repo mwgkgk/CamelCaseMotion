@@ -133,6 +133,12 @@ if exists('g:loaded_camelcasemotion') || (v:version < 700)
 endif
 let g:loaded_camelcasemotion = 1
 
+if exists('g:CamelCaseMotion_dont_use_default_mappings')
+    let s:no_default_mappings = 1
+else
+    let s:no_default_mappings = 0
+endif
+
 "- mappings -------------------------------------------------------------------
 " The count is passed into the function through the special variable 'v:count1',
 " which is easier than misusing the :[range] that :call supports. 
@@ -158,8 +164,8 @@ function! s:CreateMotionMappings()
 	for l:motion in ['w', 'b', 'e']
 	    let l:targetMapping = '<Plug>CamelCaseMotion_' . l:motion
 	    execute l:mode . 'noremap ' . l:targetMapping . ' :<C-U>call camelcasemotion#Motion(''' . l:motion . ''',v:count1,''' . l:mode . ''')<CR>'
-	    if ! hasmapto(l:targetMapping, l:mode)
-		execute (l:mode ==# 'v' ? 'x' : l:mode) . 'map <silent> ,' . l:motion . ' ' . l:targetMapping 
+	    if (s:no_default_mappings != 1) && !hasmapto(l:targetMapping, l:mode)
+			execute (l:mode ==# 'v' ? 'x' : l:mode) . 'map <silent> ,' . l:motion . ' ' . l:targetMapping 
 	    endif
 	endfor
     endfor
@@ -188,8 +194,8 @@ function! s:CreateInnerMotionMappings()
 	for l:motion in ['w', 'b', 'e']
 	    let l:targetMapping = '<Plug>CamelCaseMotion_i' . l:motion
 	    execute l:mode . 'noremap ' . l:targetMapping . ' :<C-U>call camelcasemotion#InnerMotion(''' . l:motion . ''',v:count1)<CR>'
-	    if ! hasmapto(l:targetMapping, l:mode)
-		execute (l:mode ==# 'v' ? 'x' : l:mode) . 'map <silent> i,' . l:motion . ' ' . l:targetMapping 
+	    if (s:no_default_mappings != 1) && !hasmapto(l:targetMapping, l:mode)
+			execute (l:mode ==# 'v' ? 'x' : l:mode) . 'map <silent> i,' . l:motion . ' ' . l:targetMapping 
 	    endif
 	endfor
     endfor
